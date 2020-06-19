@@ -1,0 +1,156 @@
+ul {
+    position: absolute;
+}
+
+aside {
+    position: absolute;
+    left: 50px;
+    width: 250px;
+    border-color: rgba(170, 185, 190, 0.5);
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+aside ul {
+    margin: 0;
+    position: relative;
+    list-style: none;
+    text-align: left;
+    font-size: 20px;
+    padding: 10px;
+    border-color: rgba(170, 185, 190, 0.5);
+    border-style: solid solid none solid;
+    border-width: 1px;
+    height: 20px;
+    background-color: white;
+    text-indent: 20px;
+}
+
+aside ul form input {
+    top: -1px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+}
+
+aside ul form input[type="text"] {
+    width: 179px;
+    height: 37px;
+    border-radius: 0px 0px 0px 8px;
+    font-family: 楷体;
+}
+
+aside ul form input[type="submit"] {
+    position: absolute;
+    right: 0px;
+    height: 41px;
+    width: 57px;
+    border-radius: 0px 0px 8px 0px;
+    background-color: rgba(230, 230, 230, 0.5);
+}
+
+aside ul form input[type="submit"]:hover {
+    cursor: pointer;
+}
+
+filter {
+    position: relative;
+    left: 350px;
+    top: 26px;
+    width: calc(100% - 410px);
+    background-color: white;
+}
+
+filter ul {
+    margin: 0;
+    position: relative;
+    list-style: none;
+    text-align: left;
+    font-size: 20px;
+    padding: 9px;
+    border-color: rgba(170, 185, 190, 0.5);
+    border-style: solid solid none solid;
+    border-radius: 1px;
+    border-width: 1px;
+    height: fit-content;
+    width: calc(100% - 20px);
+    background-color: rgb(255, 255, 255);
+    text-indent: 20px;
+}
+
+filter select {
+    width: 200px;
+    height: 36px;
+    margin-right: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 24px;
+    background-color: rgb(250, 250, 250);
+    border-color: rgba(170, 185, 190, 1);
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    outline: none;
+}
+
+filter select:focus {
+    border: none;
+}
+
+filter select option:nth-child(even) {
+    background-color: rgb(240, 250, 250);
+}
+
+filter select option:nth-child(odd) {
+    background-color: rgb(250, 250, 250);
+}
+
+filter input {
+    height: 36px;
+    width: 200px;
+    background-color: rgb(98, 192, 82);
+    margin-right: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    border-color: rgba(71, 141, 64, 1);
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+}
+
+filter table {
+    position: relative;
+    text-indent: 0;
+    text-align: unset;
+    right: -20px;
+    border-style: solid none;
+    border-width: 20px;
+    border-color: rgba(0, 0, 0, 0);
+    border-collapse: separate;
+    border-spacing: 30px 20px;
+}
+
+footer {
+    font-family: Verdana;
+    display: inline;
+    position: relative;
+    font-size: 16px;
+    left: 0px;
+    bottom: -10px;
+}
+
+div span a {
+    height: 10px;
+    width: 10px;
+    margin-left: 20px;
+    padding-left: 10px;
+    border: 1px solid #eaeaea;
+}
+
+#now {
+    border: 0;
+}
