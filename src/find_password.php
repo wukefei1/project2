@@ -35,6 +35,7 @@
     </div>
     <footer>
         <br><br>Copyright © 2019-2021 Web fundamental. All Rights Reserved. 备案号：19302010012
+        <br>所有图片以及数据，均已进入幻想。
     </footer>
 </body>
 

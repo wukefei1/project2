@@ -7,8 +7,8 @@ $ImageID = isset($_GET['ImageID']) ? $_GET['ImageID'] : ' ';
 $country = isset($_POST['country']) ? $_POST['country'] : ' ';
 $city = isset($_POST['city']) ? $_POST['city'] : ' ';
 $content = isset($_POST['content']) ? $_POST['content'] : ' ';
-$title = isset($_POST['title']) ? $_POST['title'] : ' ';
-$description = isset($_POST['description']) ? $_POST['description'] : ' ';
+$title = isset($_POST['title']) ? htmlspecialchars($_POST['title']) : ' ';
+$description = isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ' ';
 
 if ($ImageID  == '') $ImageID = ' ';
 if ($country == '') $country = ' ';
@@ -105,6 +105,12 @@ if (
         }
     }
     if ($ImageID != ' ') {
+        $q = "select * from travelimage where ImageID = '$ImageID' and UID='$UID'";
+        $r = mysqli_query($mysqli, $q1);
+        if (!$r) {
+            echo "<script type='text/javascript'>alert('这不是你的图片！');location='javascript:history.back()';</script>";
+            exit;
+        }
         $file0 = $_FILES['file0'];
         $upErr = $file0['error'];
         if ($upErr == 0) {

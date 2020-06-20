@@ -9,154 +9,134 @@
 ----------
 >   设计文档中提到的所有功能均已完成
 >   bonus(1)/(3)中提到的所有功能均已完成
+>   PS:使用浏览器为新版Edge（在Chrome上应该也能正常运行）
 
 ### 首页
 
-* 下拉栏
+* 导航栏
+    通过Cookie判断是否为登录状态并更改导航栏。
 
-纯css写法。正常状态下display为none，鼠标放上去时为block。
+* 显示区域
+    sql读取收藏最多的图片。不足六张则用随机图片补全。
 
-```
-.show_list .move_list {
-    display: none;
-    list-style: none;
-    ...
-}
-...
-.show_list:hover .move_list {
-    display: block;
-}
+```php
+    $sql = "select ImageID,count(*) from travelimagefavor group by ImageID order by count(*) DESC";
 ```
 
-* 头图
-选择了文件夹中的一张图作为头图。
+* 刷新
+    点击时会刷新页面，并读取随机图片。
 
-* 回到页面顶部的按钮
-回到顶部时有动画效果（js实现）。
+* 注册和登录
+    在后文会详细讲。
 
 ### 浏览页
 * 侧边栏
-点击国家时会改变城市选项（代码有些糟糕，之后会改进）
+    sql读取拥有最多图片的内容、国家、城市。点击时将其作为GET参数放入url中实现筛选。
 
-* 选项框
-二级菜单联动，使用js实现。
+* 标题筛选
+    通过通配符%实现模糊筛选，代码如下：
+
+```php
+    $sql = "select ImageID from travelimage where Title like '%" . $title . "%' LIMIT $pn,$page";
+```
+
+* 多级筛选栏
+    因为比较菜所以这里的二级联动是用php写的，代码比较糟糕。
+    讲内容、国家、城市作为参数放入url中实现筛选。
+
+* 分页
+    在筛选时统计最大数量，若超出五页则赋为五页。
+    url中同时传入代表页码的参数pn来实现分页，代码如下：
+
+```php
+    $sql = "select ImageID from travelimage where Title like '%" . $title . "%'";
+    $result = mysqli_query($mysqli, $sql); //执行sql
+    $maxrows = ($result) ? mysqli_num_rows($result) : 1;
+
+    $sql = "select ImageID from travelimage where Title like '%" . $title . "%' LIMIT $pn,$page";
+    $result = mysqli_query($mysqli, $sql); //执行sql
+    $rows = ($result) ? mysqli_num_rows($result) : 0;
+
+    ...
+
+    $num = ceil($maxrows / $page);
+    if ($num > 5) $num = 5;
+
+    echo "<a onclick='changePage(\"1\")'>&lt</a>";
+    $pn = $_GET['pn'];
+    if (!$pn) $pn = 0;
+    for ($i = 1; $i < $num + 1; $i++) {
+        echo  "<a id='" . (($pn + 1 == $i) ? 'now' : ('page' . $i)) . "' onclick='changePage(\"$i\")'>" . $i . "</a>";
+    }
+    echo "<a onclick='changePage(\"$num\")'>&gt</a>"
+```
 
 ### 搜索页
-* 筛选部分
-使用js实现了只有选择了的输入框才能填写。
+* 搜索部分
+    模糊搜索同上。
+
+* 图片展示部分
+    同上。
 
 ### 上传界面
-* 图片预览
-为了保证界面效果，图片使用js进行裁剪之后被显示（点击图片后可以查看原图，再次点击可以返回上传界面，同样js实现）。
+* 合法性校验
+    由于图片库中的数据也可以没有图片描述以及城市，故这两项为选填，其他必填。
+
+* 已上传图片的修改
+    检验这张图是否为Cookie中储存的用户的，如果是的话就从数据库中读取数据，提交后修改数据库中原有数据。
 
 ### 我的照片、我的收藏
-* 界面设计
-基本没什么好讲的，主要是响应式布局（会在下面详细讲）。
+* 页码等功能
+    同上。
+
+* 删除照片
+    我的照片中，删除按钮将同时删除数据库中所有对应数据，并删除本地库中该图片所有大小的复制。
+    我的收藏中，删除按钮只删除数据库中该条收藏的记录。
 
 ### 登录界面、注册界面
->可以相互跳转，js判断注册时两次密码是否一致。
+* 注册
+    用户名支持4-16位大小写字母、数字以及下划线、中划线、小数点。
+    密码要求为6-20位大小写字母、数字。
+    使用了哈希加盐储存盐值和密码。
+
+* 登录
+    输入的密码经处理后和数据库中的密码比对，相同则登录成功并记录Cookie。
 
 ### 图片详细信息
-* 界面设计
-同样没什么好讲的，做了响应式布局。
-
-
-
-
+* 收藏按钮
+    点击时跳转到另一个php文件以判断收藏状态并改变之，然后再跳回来。
 
 ## Bonus完成情况和解决方法
 
-### 更复杂的图片处理
-* 图片裁剪
-js实现，代码如下，大致思路是先放缩，然后再给外容器加入margin和overflow：hidden属性以隐藏多余部分。
+### 哈希加盐
 
-```
-function Zoom(obj, width, height) {
-    //裁剪图片符合固定长宽
-    var scale = Math.max(width / obj.width, height / obj.height);
-    var newWidth = obj.width * scale;
-    var newHeight = obj.height * scale;
-    var div = obj.parentNode.parentNode;
+* 实现方法
+    代码如下，大致思路是注册时给用户赋随机的盐值，然后把通过sha1()得到的哈希值作为密码，登录时取出密码和盐值并执行sha1()后和密码对比即可。
 
-    obj.width = newWidth;
-    obj.height = newHeight;
-    div.style.width = width + "px";
-    div.style.height = height + "px";
-    div.style.overflow = "hidden";
-    obj.style.marginLeft = (width - newWidth) / 2 + "px";
-    obj.style.marginRight = (height - newHeight) / 2 + "px";
-}
-```
+```php
+    $salt = base64_encode(random_bytes(32));
+    $password = sha1($password1 . $salt);//register_judge.php
+    ...
 
-### 响应式布局
-* 移动设备适配
-在所有页面加入这行代码即可。
-`<meta name="viewport" content="width=device-width, initial-scale=1.0">`
-
-* 不过分改变浏览器宽度
-js和css并用，主要思路是当宽度缩小到某个范围时改变布局或改变属性值,在必要的地方使用calc()来简化。
-
-* * 导航栏
-当界面宽度减小时，“我的账户”首先跟随界面移动，当宽度小于720px时固定。
-```
-var w = document.documentElement.clientWidth;
-var nav = document.getElementById("nav");
-if (w < 720) {
-    nav.style.width = "720px";
-} else {
-    nav.style.width = "100%";
-}
-```
-
-* * 首页
-由于一些原因，直接使用js做了页面长宽等比例缩放。
-
-* * 浏览页
-当浏览器窗口变小时，筛选结果中每一行所含有的图片数量会变少。（依然js实现）
-
-* * 浏览页
-当浏览器窗口变小时，右侧文字宽度变小。
-窗口更小时，改变布局，将文字置于图片下方。
-```
-var div = document.getElementsByName("div");
-var ul = document.getElementsByName("ul");
-var p = document.getElementsByName("p");
-for (var i = 0; i < div.length; i++) {
-    if (w > 1300) {
-        div[i].style.position = "absolute";
-        div[i].style.left = "500px";
-        div[i].style.top = "50px";
-        ul[i].style.height = "300px";
-        p[i].style.width = "600px";
-    } else if (w > 1000) {
-        div[i].style.position = "absolute";
-        div[i].style.left = "500px";
-        div[i].style.top = "50px";
-        ul[i].style.height = "300px";
-        p[i].style.width = w - 700 + "px";
-    } else if (w > 720) {
-        div[i].style.position = "relative";
-        div[i].style.left = "20px";
-        div[i].style.top = "10px";
-        ul[i].style.height = "500px";
-        p[i].style.width = w - 300 + "px";
-    } else {
-        div[i].style.position = "relative";
-        div[i].style.left = "20px";
-        div[i].style.top = "10px";
-        ul[i].style.height = "500px";
-        p[i].style.width = "420px";
+    if (sha1($password . $array['salt']) == $array['Pass']) {
+        echo "登录成功！即将跳往首页";//login_judge.php
+        ...
     }
-}
 ```
 
-* * 我的照片、我的收藏
-同样，当浏览器窗口变小时，右侧文字宽度变小。
-窗口更小时，改变布局，将文字置于图片下方，同时改变按钮位置。
-代码类型大致和搜索页相同，不再赘述。
+### 服务器部署
+* 网站地址
+    [http://wukefei.xyz:55555](http://wukefei.xyz:55555/)
 
-### 界面美观
-网页配色大致采用示例截图里的配色，所有可以点的地方在hover时都设置了cursor：pointer以增进用户体验。
+* 实现方法
+    在阿里云上白嫖学生服务器，在腾讯云上购买了域名，在服务器上配置了各种服务后就可以通过域名和端口号访问了。
+
+### 重置密码
+* 实现方法
+    通过用户名和邮箱验证，发送验证邮件确认是否是本人，然后进入重置密码界面。（顺带做了修改密码的功能）
+
+* PS：
+    在本地(localhost)上能正常使用，但是由于服务器的25端口不对外开放暂时无法在服务器上实现。
 
 ## 意见与建议
 * 暂无

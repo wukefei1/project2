@@ -32,7 +32,7 @@
                 echo
                     "<div class='header_right'>
                 <ul>
-                    <a href='./login.php'>
+                    <a>
                         <li class='show_list'>
                             <span>&#12288个人中心&#12288</span>
                             <ul class='move_list'>
@@ -383,6 +383,7 @@
     }
     ?>
     <br><br>Copyright © 2019-2021 Web fundamental. All Rights Reserved. 备案号：19302010012
+    <br>所有图片以及数据，均已进入幻想。
     </footer>
 </body>
 

@@ -14,7 +14,8 @@ if ($num) {
     $getpasstime = time();
     $uid = $row['UID'];
     $token = md5($row['UserName'] . $row['Pass']); //组合验证码 
-    $url = $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/reset.php?email=" . $email . " &token=" . $token; //构造URL 
+    // $url = $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/reset.php?email=" . $email . " &token=" . $token; //构造URL 
+    $url = "wukefei.xyz:55555/src/reset.php?email=" . $email . " &token=" . $token; //构造URL 
     $time = date('Y-m-d H:i');
     $result = sendmail($time, $email, $url);
     if ($result == 1) { //邮件发送成功 
@@ -41,7 +42,7 @@ function sendmail($time, $email, $url)
 {
     include_once("smtp.class.php");
     $smtpserver = "smtp.qq.com"; //SMTP服务器，如smtp.163.com 
-    $smtpserverport = 25; //SMTP服务器端口 
+    $smtpserverport = 465; //SMTP服务器端口 
     $smtpusermail = "3457447530@qq.com"; //SMTP服务器的用户邮箱 
     $smtpuser = "3457447530@qq.com"; //SMTP服务器的用户帐号 
     $smtppass = "vnlkwyuzaujgdajd"; //SMTP服务器的用户密码 

@@ -32,7 +32,7 @@
                 echo
                     "<div class='header_right'>
                 <ul>
-                    <a href='./login.php'>
+                    <a>
                         <li class='show_list'>
                             <span>&#12288个人中心&#12288</span>
                             <ul class='move_list'>
@@ -92,6 +92,7 @@
                 include('connect.php');
                 include('compress.php');
 
+                $UID = $_COOKIE['Username'];
                 $ImageID = isset($_GET['ImageID']) ? $_GET['ImageID'] : ' ';
                 if ($ImageID  == '') $ImageID = ' ';
 
@@ -103,14 +104,18 @@
                 $description = '';
 
                 if ($ImageID != ' ') {
-                    $sql = "select * from travelimage where ImageID='$ImageID'";
+                    $sql = "select * from travelimage where ImageID='$ImageID' and UID='$UID'";
                     $result = mysqli_query($mysqli, $sql); //执行sql
                     $rows = ($result) ? mysqli_num_rows($result) : 0;
+                    if ($rows == 0) {
+                        echo "<script type='text/javascript'>alert('这不是你的图片！');location='javascript:history.back()';</script>";
+                        exit;
+                    }
                     if ($rows) {
                         $array = mysqli_fetch_array($result);
                         if ($src == '') $src = "../img/travel-images/large/" . $array['PATH'];
                         if ($country == '') $country = $array['Country_RegionCodeISO'];
-                        if ($content == '') $city = $array['CityCode'];
+                        if ($city == '') $city = $array['CityCode'];
                         if ($content == '') $content = $array['Content'];
                         if ($title == '') $title = $array['Title'];
                         if ($description == '') $description = $array['Description'];
@@ -151,7 +156,7 @@
                 $result = mysqli_query($mysqli, $sql); //执行sql
                 $rows = ($result) ? mysqli_num_rows($result) : 0;
                 echo "<select name='content' id='content'>";
-                echo "<option value=' ' " . (($content == ' ') ? 'selected' : '') . ">请选择内容</option>";
+                echo "<option value=' ' " . (($content == '') ? 'selected' : '') . ">请选择内容</option>";
                 for ($i = 0; $i < $rows; $i++) {
                     $array = mysqli_fetch_array($result);
                     $temp1 = $array['Content'];
@@ -163,7 +168,7 @@
                 $result = mysqli_query($mysqli, $sql); //执行sql
                 $rows = ($result) ? mysqli_num_rows($result) : 0;
                 echo "<select name='country' id='country'>";
-                echo "<option value=' ' " . (($country == ' ') ? 'selected' : '') . ">请选择国家</option>";
+                echo "<option value=' ' " . (($country == '') ? 'selected' : '') . ">请选择国家</option>";
                 for ($i = 0; $i < $rows; $i++) {
                     $array = mysqli_fetch_array($result);
                     $temp1 = $array['Country_RegionName'];
@@ -173,7 +178,18 @@
                 echo "</select>";
 
                 echo "<select name='city' id='city'>";
-                echo "<option value=' '" . (($city == ' ') ? 'selected' : '') . ">请选择城市</option>";
+                echo "<option value=' '" . (($city == '') ? 'selected' : '') . ">请选择城市</option>";
+                if ($country != ' ') {
+                    $sql = "select AsciiName,GeoNameID from geocities where Country_RegionCodeISO='$country'";
+                    $result = mysqli_query($mysqli, $sql); //执行sql
+                    $rows = ($result) ? mysqli_num_rows($result) : 0;
+                    for ($i = 0; $i < $rows; $i++) {
+                        $array = mysqli_fetch_array($result);
+                        $temp1 = $array['AsciiName'];
+                        $temp2 = $array['GeoNameID'];
+                        echo "<option value='$temp1' " . (($temp2 == $city) ? 'selected' : '') . ">$temp1</option>";
+                    }
+                }
                 echo "</select><br><br>
                 <script src='js/filter_onchange.js'></script>
             <input type='submit' value='提交' name='submit'>
@@ -194,6 +210,7 @@
 
         <footer>
             <br><br>Copyright © 2019-2021 Web fundamental. All Rights Reserved. 备案号：19302010012
+            <br>所有图片以及数据，均已进入幻想。
         </footer>
     </div>
     <a><img src='' onclick='closeImage()' id='yuantu'></a>

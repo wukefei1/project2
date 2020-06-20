@@ -64,7 +64,7 @@
                 echo
                     "<div class='header_right'>
                 <ul>
-                    <a href='./login.php'>
+                    <a>
                         <li class='show_list'>
                             <span>&#12288个人中心&#12288</span>
                             <ul class='move_list'>
@@ -115,6 +115,7 @@
             <?php
             include('connect.php'); //链接数据库
             include('random.php');
+            
             $sql = "select ImageID from travelimage order by ImageID DESC LIMIT 0,1";
             $result = mysqli_query($mysqli, $sql); //执行sql
             $array = mysqli_fetch_array($result);
@@ -245,7 +246,7 @@
         <img src='../img/home/tencent.png' style='top:120px;left: 820px;' id='img21'>
         <img src='../img/home/weixin.png' style='top:40px;left: 820px;' id='img22'>
         <img src='../img/home/footer.png' id='myweixin'>
-        <p>Copyrightc © 2019-2021 Web fundamental. All Rights Reserved. 备案号：19302010012</p>
+        <p>Copyrightc © 2019-2021 Web fundamental. All Rights Reserved. 备案号：19302010012<br>所有图片以及数据，均已进入幻想。</p>
     </footer>
 </body>
 

@@ -32,7 +32,7 @@
                 echo
                     "<div class='header_right'>
                 <ul>
-                    <a href='./login.php'>
+                    <a>
                         <li class='show_list'>
                             <span>&#12288个人中心&#12288</span>
                             <ul class='move_list'>
@@ -115,6 +115,9 @@
                         $sql3 = "select * from traveluser where UID = '$UID'";
                         $result3 = mysqli_query($mysqli, $sql3);
                         $array3 = mysqli_fetch_array($result3);
+                        $sql4 = "select count(*) from travelimagefavor where ImageID = '$id'";
+                        $result4 = mysqli_query($mysqli, $sql4);
+                        $array4 = mysqli_fetch_array($result4);
                         echo "<h1>" . $array['Title'] . "<small>by " . $array3['UserName'] . "</small></h1>
                 <div>
                     <a>
@@ -122,8 +125,8 @@
                     </a>
                 </div>
                 <p id='hint'>点击图片以查看原图</p>
-                <ul class='first' name='ul'>喜爱程度</ul>
-                <ul class='last' name='ul' style='height: 30px;text-align: center;font: 24px Verdana;color: red;'>99</ul>
+                <ul class='first' name='ul'>收藏数</ul>
+                <ul class='last' name='ul' style='height: 30px;text-align: center;font: 24px Verdana;color: red;'>" . $array4['count(*)'] . "</ul>
                 <br>
                 <ul class='first' name='ul'>图片详细信息</ul>
                 <ul name='ul'>内容：" . $array['Content'] . "</ul>
@@ -155,6 +158,7 @@
 
         <footer>
             <br><br>Copyright © 2019-2021 Web fundamental. All Rights Reserved. 备案号：19302010012
+            <br>所有图片以及数据，均已进入幻想。
         </footer>
     </div>
     <a><img src='' onclick='closeImage()' id='yuantu'></a>
