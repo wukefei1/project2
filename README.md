@@ -2,13 +2,17 @@
 
 ----------
 >   吴可非 19302010012
+
 >   Github地址：[https://github.com/wukefei1/project2](https://github.com/wukefei1/project2)
+
 >   网站地址：[http://wukefei.xyz:55555](http://wukefei.xyz:55555/)
 
 ## 项目完成情况
 ----------
 >   设计文档中提到的所有功能均已完成
+
 >   bonus(1)/(3)中提到的所有功能均已完成
+
 >   PS:使用浏览器为新版Edge（在Chrome上应该也能正常运行）
 
 ### 首页
